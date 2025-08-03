@@ -1,3 +1,19 @@
+// Fallback configuration if config.js fails to load
+if (typeof SUPABASE_CONFIG === 'undefined') {
+    window.SUPABASE_CONFIG = {
+        URL: 'https://xvcdjxhrhklibpjeizmt.supabase.co',
+        ANON_KEY: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2Y2RqeGhyaGtsaWJwamVpem10Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQwMTQxNDgsImV4cCI6MjA2OTU5MDE0OH0.kT76MmN1aBFQub08Zpq-7t7V0X0iFldS8OAulHc0Cj4'
+    };
+}
+
+if (typeof EXAM_CONFIG === 'undefined') {
+    window.EXAM_CONFIG = {
+        TIME_LIMIT: 3600, // 60 minutes in seconds
+        MAX_FILE_SIZE: 5 * 1024 * 1024, // 5MB
+        ALLOWED_FILE_TYPES: ['image/jpeg', 'image/png', 'image/gif', 'application/pdf', 'text/plain']
+    };
+}
+
 // Supabase Configuration
 const supabase = window.supabase.createClient(SUPABASE_CONFIG.URL, SUPABASE_CONFIG.ANON_KEY);
 
@@ -139,7 +155,7 @@ async function handleFileUpload(e) {
     }
     
     // Validate file size (max 10MB for PDF, 5MB for images)
-            const maxSize = file.type === 'application/pdf' ? 10 * 1024 * 1024 : EXAM_CONFIG.MAX_FILE_SIZE;
+    const maxSize = file.type === 'application/pdf' ? 10 * 1024 * 1024 : EXAM_CONFIG.MAX_FILE_SIZE;
     if (file.size > maxSize) {
         const maxSizeMB = maxSize / (1024 * 1024);
         alert(`File quá lớn! Vui lòng chọn file nhỏ hơn ${maxSizeMB}MB.`);
@@ -164,12 +180,9 @@ async function handleFileUpload(e) {
             fileExtension = (originalExt === 'jpeg' || originalExt === 'jpg') ? originalExt : 'jpg';
         } else if (file.type === 'image/png') {
             fileExtension = 'png';
-        } else {
-            // Fallback: lấy extension từ tên file
-            fileExtension = file.name.split('.').pop().toLowerCase();
         }
         
-        const fileName = `${currentStudent.id}_${questionNumber}_${timestamp}.${fileExtension}`;
+        const fileName = `exam_${currentStudent.id}_q${questionNumber}_${timestamp}.${fileExtension}`;
         
         // Upload to Supabase Storage
         const { data, error } = await supabase.storage
@@ -185,21 +198,20 @@ async function handleFileUpload(e) {
             .from('exam-files')
             .getPublicUrl(fileName);
         
-        // Store the file info
+        // Store file info
         uploadedFiles[questionNumber] = {
             url: publicUrl,
             name: file.name,
-            type: file.type,
             size: file.size,
-            extension: fileExtension
+            type: file.type
         };
         
-        // Show preview
+        // Show file preview
         showFilePreview(previewDiv, uploadedFiles[questionNumber], questionNumber);
         
     } catch (error) {
         console.error('Upload error:', error);
-        previewDiv.innerHTML = '<div class="error-message">Lỗi tải file! Vui lòng thử lại.</div>';
+        previewDiv.innerHTML = '<div class="error-message">Lỗi upload file. Vui lòng thử lại!</div>';
     }
 }
 
@@ -207,60 +219,76 @@ async function handleFileUpload(e) {
 function showFilePreview(previewDiv, fileInfo, questionNumber) {
     const isImage = fileInfo.type.startsWith('image/');
     const isPDF = fileInfo.type === 'application/pdf';
-    const fileSize = formatFileSize(fileInfo.size);
+    
+    let previewHTML = '';
     
     if (isImage) {
-        previewDiv.innerHTML = `
-            <img src="${fileInfo.url}" alt="Bài làm câu ${questionNumber}" />
-            <button class="remove-btn" onclick="removeFile('${questionNumber}')">×</button>
-            <div class="file-info">${fileInfo.name} - ${fileSize} (${fileInfo.extension.toUpperCase()})</div>
+        previewHTML = `
+            <div class="file-preview-item">
+                <img src="${fileInfo.url}" alt="Preview" style="max-width: 200px; max-height: 200px;">
+                <div class="file-info">
+                    <p><strong>${fileInfo.name}</strong></p>
+                    <p>Kích thước: ${formatFileSize(fileInfo.size)}</p>
+                </div>
+                <button class="remove-btn" onclick="removeFile('${questionNumber}')">❌ Xóa</button>
+                <button class="view-btn" onclick="openFileModal('${fileInfo.url}', '${fileInfo.name}')">👁️ Xem</button>
+            </div>
         `;
     } else if (isPDF) {
-        previewDiv.innerHTML = `
-            <div class="pdf-preview">
-                <div class="pdf-icon">📄</div>
-                <div class="pdf-name">${fileInfo.name}</div>
-                <div class="pdf-size">${fileSize}</div>
-                <button class="view-btn" onclick="openFileModal('${fileInfo.url}', '${fileInfo.name}')">👁️ Xem PDF</button>
-                <button class="remove-btn" onclick="removeFile('${questionNumber}')">×</button>
+        previewHTML = `
+            <div class="file-preview-item">
+                <div class="pdf-preview">
+                    <div class="pdf-icon">📄</div>
+                    <div class="pdf-name">${fileInfo.name}</div>
+                    <div class="pdf-size">${formatFileSize(fileInfo.size)}</div>
+                </div>
+                <button class="remove-btn" onclick="removeFile('${questionNumber}')">❌ Xóa</button>
+                <button class="view-btn" onclick="openFileModal('${fileInfo.url}', '${fileInfo.name}')">👁️ Xem</button>
             </div>
         `;
     }
     
-    previewDiv.style.display = 'block';
+    previewDiv.innerHTML = previewHTML;
 }
 
 // Remove File
 function removeFile(questionNumber) {
-    const previewDiv = document.getElementById(`${questionNumber}_preview`);
-    const fileInput = document.querySelector(`input[name="${questionNumber}_file"]`);
-    
-    // Clear the file input
-    fileInput.value = '';
-    
-    // Remove from uploaded files
     delete uploadedFiles[questionNumber];
-    
-    // Hide preview
-    previewDiv.style.display = 'none';
+    const previewDiv = document.getElementById(`${questionNumber}_preview`);
     previewDiv.innerHTML = '';
+    previewDiv.style.display = 'none';
+    
+    // Reset file input
+    const fileInput = document.querySelector(`input[name="${questionNumber}_file"]`);
+    if (fileInput) {
+        fileInput.value = '';
+    }
 }
 
 // Open File Modal
 function openFileModal(fileUrl, fileName) {
     const modal = document.createElement('div');
-    modal.className = 'modal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+    `;
+    
     modal.innerHTML = `
-        <div class="modal-content large">
-            <div class="modal-header">
-                <h2>Xem file: ${fileName}</h2>
-                <button class="close-btn" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
-            </div>
-            <div class="modal-body">
-                <iframe src="${fileUrl}" width="100%" height="600px" frameborder="0"></iframe>
-            </div>
+        <div style="background: white; padding: 20px; border-radius: 10px; max-width: 90%; max-height: 90%; overflow: auto;">
+            <h3>${fileName}</h3>
+            <iframe src="${fileUrl}" width="100%" height="500px" style="border: none;"></iframe>
+            <button onclick="this.parentElement.parentElement.remove()" style="margin-top: 10px; padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">Đóng</button>
         </div>
     `;
+    
     document.body.appendChild(modal);
 }
 
@@ -273,7 +301,7 @@ function formatFileSize(bytes) {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
 }
 
-// Exam Submit Handler
+// Handle Exam Submit
 async function handleExamSubmit(e) {
     e.preventDefault();
     
@@ -281,21 +309,13 @@ async function handleExamSubmit(e) {
         clearInterval(examTimer);
     }
     
+    // Collect answers
     const formData = new FormData(e.target);
-    const answers = {
-        q1: formData.get('q1') || '',
-        q2: formData.get('q2') || '',
-        q3: formData.get('q3') || '',
-        q4: formData.get('q4') || '',
-        q5: formData.get('q5') || '',
-        q6: formData.get('q6') || ''
-    };
+    const answers = {};
     
-    // Add file URLs to answers
-    const answersWithFiles = {
-        ...answers,
-        files: uploadedFiles
-    };
+    for (let i = 1; i <= 6; i++) {
+        answers[`q${i}`] = formData.get(`q${i}`) || '';
+    }
     
     try {
         // Save exam results to database
@@ -305,149 +325,79 @@ async function handleExamSubmit(e) {
                 {
                     student_id: currentStudent.id,
                     student_name: currentStudent.name,
-                    student_email: currentStudent.email,
-                    answers: answersWithFiles,
-                    time_taken: 3600 - timeLeft,
+                    answers: answers,
+                    uploaded_files: uploadedFiles,
+                    time_taken: EXAM_CONFIG.TIME_LIMIT - timeLeft,
                     submitted_at: new Date().toISOString()
                 }
             ]);
         
         if (error) {
-            console.error('Error saving exam:', error);
-            alert('Có lỗi xảy ra khi lưu bài làm!');
-            return;
+            throw error;
         }
         
         // Show results
-        showResults(answersWithFiles);
+        showResults({ answers, uploadedFiles });
         
     } catch (error) {
-        console.error('Exam submit error:', error);
-        alert('Có lỗi xảy ra!');
+        console.error('Submit error:', error);
+        alert('Có lỗi xảy ra khi nộp bài. Vui lòng thử lại!');
     }
 }
 
 // Show Results
 function showResults(answersWithFiles) {
-    const timeTaken = 3600 - timeLeft;
-    const minutes = Math.floor(timeTaken / 60);
-    const seconds = timeTaken % 60;
+    let resultHTML = '<h3>Bài làm của bạn đã được nộp thành công!</h3>';
     
-    let filesHtml = '';
-    if (Object.keys(answersWithFiles.files || {}).length > 0) {
-        filesHtml = '<h4>File bài làm:</h4>';
-        Object.keys(answersWithFiles.files).forEach(qNum => {
-            const fileInfo = answersWithFiles.files[qNum];
-            const isPDF = fileInfo.type === 'application/pdf';
-            const icon = isPDF ? '📄' : '🖼️';
-            const extension = fileInfo.extension ? ` (${fileInfo.extension.toUpperCase()})` : '';
-            filesHtml += `<p><strong>Câu ${qNum}:</strong> ${icon} <a href="${fileInfo.url}" target="_blank">${fileInfo.name}</a>${extension} - ${formatFileSize(fileInfo.size)}</p>`;
-        });
-    }
+    // Show answers
+    Object.keys(answersWithFiles.answers).forEach(question => {
+        const answer = answersWithFiles.answers[question];
+        const files = answersWithFiles.uploadedFiles[question];
+        
+        resultHTML += `
+            <p><strong>${question.toUpperCase()}:</strong></p>
+            <p>${answer || 'Không có câu trả lời'}</p>
+        `;
+        
+        if (files) {
+            resultHTML += `<p><strong>File đính kèm:</strong> <a href="${files.url}" target="_blank">${files.name}</a></p>`;
+        }
+        
+        resultHTML += '<hr>';
+    });
     
-    resultContent.innerHTML = `
-        <p><strong>Học sinh:</strong> ${currentStudent.name}</p>
-        <p><strong>Email:</strong> ${currentStudent.email}</p>
-        <p><strong>Thời gian làm bài:</strong> ${minutes}:${seconds.toString().padStart(2, '0')}</p>
-        <p><strong>Trạng thái:</strong> <span style="color: #27ae60;">Đã nộp bài thành công!</span></p>
-        <hr style="margin: 20px 0;">
-        <h3>Đáp án của bạn:</h3>
-        <p><strong>Câu 1:</strong> ${answersWithFiles.q1 || 'Chưa trả lời'}</p>
-        <p><strong>Câu 2:</strong> ${answersWithFiles.q2 || 'Chưa trả lời'}</p>
-        <p><strong>Câu 3:</strong> ${answersWithFiles.q3 || 'Chưa trả lời'}</p>
-        <p><strong>Câu 4:</strong> ${answersWithFiles.q4 || 'Chưa trả lời'}</p>
-        <p><strong>Câu 5:</strong> ${answersWithFiles.q5 || 'Chưa trả lời'}</p>
-        <p><strong>Câu 6:</strong> ${answersWithFiles.q6 || 'Chưa trả lời'}</p>
-        ${filesHtml}
-    `;
-    
-    resultModal.style.display = 'flex';
+    resultContent.innerHTML = resultHTML;
+    resultModal.style.display = 'block';
 }
 
-// Logout Handler
+// Handle Logout
 function handleLogout() {
     if (examTimer) {
         clearInterval(examTimer);
     }
     
     currentStudent = null;
-    timeLeft = 3600;
-    timer.textContent = '60:00';
+    timeLeft = EXAM_CONFIG.TIME_LIMIT;
     uploadedFiles = {};
     
-    // Reset form
+    loginForm.style.display = 'flex';
+    examForm.style.display = 'none';
+    
+    // Reset forms
+    document.getElementById('login').reset();
     document.getElementById('exam').reset();
     
     // Clear file previews
     document.querySelectorAll('.file-preview').forEach(preview => {
-        preview.style.display = 'none';
         preview.innerHTML = '';
+        preview.style.display = 'none';
     });
     
-    // Show login form
-    examForm.style.display = 'none';
-    loginForm.style.display = 'flex';
-    loginError.textContent = '';
-    
-    // Clear inputs
-    document.getElementById('email').value = '';
-    document.getElementById('password').value = '';
+    // Reset timer
+    timer.textContent = '60:00';
 }
 
-// Auto-save answers every 30 seconds
-setInterval(() => {
-    if (currentStudent && examForm.style.display !== 'none') {
-        const formData = new FormData(document.getElementById('exam'));
-        const answers = {
-            q1: formData.get('q1') || '',
-            q2: formData.get('q2') || '',
-            q3: formData.get('q3') || '',
-            q4: formData.get('q4') || '',
-            q5: formData.get('q5') || '',
-            q6: formData.get('q6') || ''
-        };
-        
-        // Save to localStorage as backup
-        localStorage.setItem('exam_answers', JSON.stringify(answers));
-        localStorage.setItem('uploaded_files', JSON.stringify(uploadedFiles));
-    }
-}, 30000);
-
-// Load saved answers on page load
-window.addEventListener('load', () => {
-    const savedAnswers = localStorage.getItem('exam_answers');
-    const savedFiles = localStorage.getItem('uploaded_files');
-    
-    if (savedAnswers) {
-        const answers = JSON.parse(savedAnswers);
-        Object.keys(answers).forEach(key => {
-            const textarea = document.querySelector(`textarea[name="${key}"]`);
-            if (textarea) {
-                textarea.value = answers[key];
-            }
-        });
-    }
-    
-    if (savedFiles) {
-        uploadedFiles = JSON.parse(savedFiles);
-        // Note: File previews won't be restored due to security restrictions
-    }
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('Exam system initialized successfully');
 });
-
-// Prevent form submission on Enter key in textareas
-document.querySelectorAll('textarea').forEach(textarea => {
-    textarea.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && e.ctrlKey) {
-            e.preventDefault();
-            document.getElementById('exam').dispatchEvent(new Event('submit'));
-        }
-    });
-});
-
-// Warn user before leaving page
-window.addEventListener('beforeunload', (e) => {
-    if (currentStudent && examForm.style.display !== 'none') {
-        e.preventDefault();
-        e.returnValue = 'Bạn có chắc muốn rời khỏi trang? Bài làm sẽ bị mất!';
-    }
-}); 
