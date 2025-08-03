@@ -513,4 +513,47 @@ body {
     background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
     width: 0%;
     transition: width 0.3s ease;
+}
+
+/* MathJax Styles */
+.MathJax {
+    font-size: 1.1em;
+    color: #333;
+}
+
+.question p .MathJax {
+    display: inline;
+    margin: 0 2px;
+}
+
+/* Ensure MathJax formulas are properly spaced */
+.question p {
+    line-height: 1.6;
+}
+
+/* Style for mathematical expressions */
+.mjx-chtml {
+    font-size: 1.1em !important;
+}
+
+/* Ensure proper alignment for inline math */
+.mjx-chtml[display="true"] {
+    margin: 1em 0;
+}
+
+/* Mobile responsive MathJax */
+@media (max-width: 768px) {
+    .MathJax {
+        font-size: 1em !important;
+    }
+    
+    .mjx-chtml {
+        font-size: 1em !important;
+    }
+    
+    /* Ensure formulas don't overflow on mobile */
+    .question p {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
 } 
