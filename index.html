@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hệ thống Kiểm tra Toán học</title>
-    <link rel="stylesheet" href="style.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="./style.css">
+    
+    <!-- Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <!-- MathJax Configuration -->
@@ -24,6 +28,31 @@
     </script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <!-- Error handling for missing files -->
+    <script>
+        window.addEventListener('error', function(e) {
+            if (e.target.tagName === 'SCRIPT') {
+                console.error('Failed to load script:', e.target.src);
+                // Show user-friendly error message
+                document.body.innerHTML = `
+                    <div style="text-align: center; padding: 50px; font-family: Arial, sans-serif;">
+                        <h2>⚠️ Lỗi tải trang</h2>
+                        <p>Không thể tải các file cần thiết. Vui lòng:</p>
+                        <ul style="text-align: left; display: inline-block;">
+                            <li>Kiểm tra kết nối internet</li>
+                            <li>Refresh trang</li>
+                            <li>Liên hệ giáo viên nếu vấn đề tiếp tục</li>
+                        </ul>
+                        <br>
+                        <button onclick="location.reload()" style="padding: 10px 20px; background: #667eea; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                            Thử lại
+                        </button>
+                    </div>
+                `;
+            }
+        });
+    </script>
 </head>
 <body>
     <div class="container">
@@ -175,7 +204,31 @@
         </div>
     </div>
 
-    <script src="config.js"></script>
-    <script src="script.js"></script>
+    <!-- JavaScript files with error handling -->
+    <script>
+        // Load config.js with error handling
+        function loadScript(src, callback) {
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = callback;
+            script.onerror = function() {
+                console.error('Failed to load:', src);
+                // If config.js fails, load script.js directly
+                if (src.includes('config.js')) {
+                    loadScript('./script.js', function() {
+                        console.log('Loaded script.js directly');
+                    });
+                }
+            };
+            document.head.appendChild(script);
+        }
+
+        // Load scripts in sequence
+        loadScript('./config.js', function() {
+            loadScript('./script.js', function() {
+                console.log('All scripts loaded successfully');
+            });
+        });
+    </script>
 </body>
 </html> 
