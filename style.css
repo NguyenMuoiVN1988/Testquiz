@@ -1,0 +1,516 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Login Form Styles */
+.form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.form-card {
+    background: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.form-card h1 {
+    color: #333;
+    margin-bottom: 30px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #555;
+    font-weight: 500;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    width: 100%;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+}
+
+.error-message {
+    color: #e74c3c;
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+/* Exam Form Styles */
+.exam-container {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    margin: 20px 0;
+}
+
+.exam-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.exam-header h1 {
+    color: #333;
+    margin-bottom: 15px;
+    font-size: 28px;
+}
+
+.student-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-top: 15px;
+}
+
+.student-info p {
+    margin: 0;
+    font-weight: 500;
+    color: #555;
+}
+
+#timer {
+    color: #e74c3c;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+/* File Info Banner */
+.file-info-banner {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    margin-top: 15px;
+    text-align: center;
+}
+
+.file-info-banner p {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.question-section {
+    margin-bottom: 40px;
+}
+
+.question-section h2 {
+    color: #333;
+    margin-bottom: 20px;
+    padding: 15px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 8px;
+    font-size: 20px;
+}
+
+.question {
+    margin-bottom: 30px;
+    padding: 20px;
+    border: 1px solid #e1e5e9;
+    border-radius: 10px;
+    background: #fafbfc;
+}
+
+.question h3 {
+    color: #333;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.question p {
+    color: #555;
+    margin-bottom: 15px;
+    line-height: 1.6;
+    font-size: 16px;
+}
+
+/* Answer Section Styles */
+.answer-section {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.question textarea {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+}
+
+.question textarea:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+/* File Upload Styles */
+.file-upload-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.upload-label {
+    display: inline-block;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.upload-label:hover {
+    transform: translateY(-2px);
+}
+
+.file-input {
+    display: none;
+}
+
+.upload-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+    text-align: center;
+}
+
+.upload-btn:hover {
+    background: linear-gradient(135deg, #229954 0%, #27ae60 100%);
+    transform: translateY(-2px);
+}
+
+.file-preview {
+    display: none;
+    margin-top: 10px;
+    position: relative;
+}
+
+.file-preview img {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: 8px;
+    border: 2px solid #e1e5e9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.file-preview .remove-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.file-preview .remove-btn:hover {
+    background: #c0392b;
+    transform: scale(1.1);
+}
+
+.file-preview .file-info {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #666;
+    text-align: center;
+}
+
+.file-preview .pdf-preview {
+    background: #f8f9fa;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.file-preview .pdf-preview .pdf-icon {
+    font-size: 48px;
+    color: #e74c3c;
+    margin-bottom: 10px;
+}
+
+.file-preview .pdf-preview .pdf-name {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.file-preview .pdf-preview .pdf-size {
+    font-size: 12px;
+    color: #666;
+}
+
+.file-preview .view-btn {
+    background: #3498db;
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 10px;
+}
+
+.file-preview .view-btn:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+}
+
+.exam-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 2px solid #f0f0f0;
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+}
+
+.btn-logout {
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.btn-logout:hover {
+    transform: translateY(-2px);
+}
+
+/* Modal Styles */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h2 {
+    color: #333;
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+#resultContent {
+    margin-bottom: 20px;
+    text-align: left;
+}
+
+#resultContent p {
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    background: #f8f9fa;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    
+    .form-card {
+        padding: 30px 20px;
+    }
+    
+    .exam-container {
+        padding: 20px;
+    }
+    
+    .student-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .exam-actions {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .btn-submit, .btn-logout {
+        width: 100%;
+    }
+    
+    .answer-section {
+        gap: 10px;
+    }
+    
+    .upload-btn {
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+    
+    .file-info-banner {
+        padding: 10px 15px;
+        font-size: 13px;
+    }
+}
+
+/* Loading Animation */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #667eea;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Success/Error Messages */
+.success-message {
+    color: #27ae60;
+    background: #d5f4e6;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+.error-message {
+    color: #e74c3c;
+    background: #fadbd8;
+    padding: 10px;
+    border-radius: 5px;
+    margin: 10px 0;
+}
+
+/* Upload Progress */
+.upload-progress {
+    width: 100%;
+    height: 4px;
+    background: #e1e5e9;
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 5px;
+}
+
+.upload-progress-bar {
+    height: 100%;
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    width: 0%;
+    transition: width 0.3s ease;
+} 
