@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ thống Kiểm tra Toán học</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Form -->
+        <div id="loginForm" class="form-container">
+            <div class="form-card">
+                <h1>Đăng nhập hệ thống kiểm tra</h1>
+                <form id="login">
+                    <div class="form-group">
+                        <label for="email">Email:</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Mật khẩu:</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn-primary">Đăng nhập</button>
+                </form>
+                <div id="loginError" class="error-message"></div>
+            </div>
+        </div>
+
+        <!-- Exam Form -->
+        <div id="examForm" class="exam-container" style="display: none;">
+            <div class="exam-header">
+                <h1>Bài kiểm tra Toán học</h1>
+                <div class="student-info">
+                    <p>Học sinh: <span id="studentName"></span></p>
+                    <p>Thời gian: <span id="timer">60:00</span></p>
+                </div>
+                <div class="file-info-banner">
+                    <p>📄 Hỗ trợ upload: PDF (max 10MB), JPG/JPEG/PNG (max 5MB)</p>
+                </div>
+            </div>
+
+            <form id="exam">
+                <div class="question-section">
+                    <h2>Phần 1: Hệ trục tọa độ Oxy</h2>
+                    
+                    <div class="question">
+                        <h3>Câu 1:</h3>
+                        <p>Nêu điều kiện cần và đủ để hai vectơ \(\vec{a}=(x_a,y_a,z_a)\) và \(\vec{b}=(x_b,y_b,z_b)\) cùng phương trong mặt phẳng tọa độ \(Oxyz\).</p>
+                        <div class="answer-section">
+                            <textarea name="q1" rows="4" placeholder="Nhập câu trả lời của bạn..."></textarea>
+                            <div class="file-upload-section">
+                                <label class="upload-label">
+                                    <input type="file" name="q1_file" accept=".pdf,.jpg,.jpeg,.png" class="file-input">
+                                    <span class="upload-btn">📄 Upload bài làm (PDF/JPG/JPEG/PNG)</span>
+                                </label>
+                                <div class="file-preview" id="q1_preview"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <h3>Câu 2:</h3>
+                        <p>Công thức tính góc tạo bởi 2 vectơ \(\vec{a}=(x_a,y_a,z_a)\) và \(\vec{b}=(x_b,y_b,z_b)\) trong mặt phẳng tọa độ \(Oxyz\).</p>
+                        <div class="answer-section">
+                            <textarea name="q2" rows="4" placeholder="Nhập câu trả lời của bạn..."></textarea>
+                            <div class="file-upload-section">
+                                <label class="upload-label">
+                                    <input type="file" name="q2_file" accept=".pdf,.jpg,.jpeg,.png" class="file-input">
+                                    <span class="upload-btn">📄 Upload bài làm (PDF/JPG/JPEG/PNG)</span>
+                                </label>
+                                <div class="file-preview" id="q2_preview"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <h3>Câu 3:</h3>
+                        <p>Cho 3 điểm \(A(x_a,y_a,z_a)\), \(B(x_b,y_b,z_b)\) và \(C(x_c,y_c,z_c)\). Viết phương trình mặt phẳng đi qua 3 điểm \(A, B, C\).</p>
+                        <div class="answer-section">
+                            <textarea name="q3" rows="4" placeholder="Nhập câu trả lời của bạn..."></textarea>
+                            <div class="file-upload-section">
+                                <label class="upload-label">
+                                    <input type="file" name="q3_file" accept=".pdf,.jpg,.jpeg,.png" class="file-input">
+                                    <span class="upload-btn">📄 Upload bài làm (PDF/JPG/JPEG/PNG)</span>
+                                </label>
+                                <div class="file-preview" id="q3_preview"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="question-section">
+                    <h2>Phần 2: Xác suất có điều kiện</h2>
+                    
+                    <div class="question">
+                        <h3>Câu 4:</h3>
+                        <p>Cho 2 biến cố \(A\) và \(B\) có \(P(A) = 0.6\), \(P(B) = 0.4\) và \(P(A \cap B) = 0.2\). Tính \(P(A \cup B)\).</p>
+                        <div class="answer-section">
+                            <textarea name="q4" rows="4" placeholder="Nhập câu trả lời của bạn..."></textarea>
+                            <div class="file-upload-section">
+                                <label class="upload-label">
+                                    <input type="file" name="q4_file" accept=".pdf,.jpg,.jpeg,.png" class="file-input">
+                                    <span class="upload-btn">📄 Upload bài làm (PDF/JPG/JPEG/PNG)</span>
+                                </label>
+                                <div class="file-preview" id="q4_preview"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <h3>Câu 5:</h3>
+                        <p>Cho 2 biến cố \(A\) và \(B\) có \(P(A) = 0.6\), \(P(B) = 0.4\) và \(P(A \cap B) = 0.2\). Tính \(P(A \cup B)\).</p>
+                        <div class="answer-section">
+                            <textarea name="q5" rows="4" placeholder="Nhập câu trả lời của bạn..."></textarea>
+                            <div class="file-upload-section">
+                                <label class="upload-label">
+                                    <input type="file" name="q5_file" accept=".pdf,.jpg,.jpeg,.png" class="file-input">
+                                    <span class="upload-btn">📄 Upload bài làm (PDF/JPG/JPEG/PNG)</span>
+                                </label>
+                                <div class="file-preview" id="q5_preview"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="question">
+                        <h3>Câu 6:</h3>
+                        <p>Cho 2 biến cố \(A\) và \(B\) có \(P(A) = 0.6\), \(P(B) = 0.3\) và \(P(A|B) = 0.2\). Tính \(P(B|A)\).</p>
+                        <div class="answer-section">
+                            <textarea name="q6" rows="4" placeholder="Nhập câu trả lời của bạn..."></textarea>
+                            <div class="file-upload-section">
+                                <label class="upload-label">
+                                    <input type="file" name="q6_file" accept=".pdf,.jpg,.jpeg,.png" class="file-input">
+                                    <span class="upload-btn">📄 Upload bài làm (PDF/JPG/JPEG/PNG)</span>
+                                </label>
+                                <div class="file-preview" id="q6_preview"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="exam-actions">
+                    <button type="submit" class="btn-submit">Nộp bài</button>
+                    <button type="button" id="logoutBtn" class="btn-logout">Đăng xuất</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Result Modal -->
+        <div id="resultModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h2>Kết quả bài kiểm tra</h2>
+                <div id="resultContent"></div>
+                <button id="closeModal" class="btn-primary">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html> 
