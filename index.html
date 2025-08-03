@@ -6,6 +6,24 @@
     <title>Hệ thống Kiểm tra Toán học</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <!-- MathJax Configuration -->
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true
+            },
+            options: {
+                ignoreHtmlClass: 'tex2jax_ignore',
+                processHtmlClass: 'tex2jax_process'
+            }
+        };
+    </script>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
     <div class="container">
@@ -47,7 +65,7 @@
                     
                     <div class="question">
                         <h3>Câu 1:</h3>
-                        <p>Nêu điều kiện cần và đủ để hai vectơ \(\vec{a}=(x_a,y_a,z_a)\) và \(\vec{b}=(x_b,y_b,z_b)\) cùng phương trong mặt phẳng tọa độ \(Oxyz\).</p>
+                        <p>Nêu điều kiện cần và đủ để hai vectơ \(\vec{a}=(x_a,y_a,z_a)\) và \(\vec{b}=(x_b,y_b,z_b)\) cùng phương trong không gian tọa độ \(Oxyz\).</p>
                         <div class="answer-section">
                             <textarea name="q1" rows="4" placeholder="Nhập câu trả lời của bạn..."></textarea>
                             <div class="file-upload-section">
@@ -62,7 +80,7 @@
 
                     <div class="question">
                         <h3>Câu 2:</h3>
-                        <p>Công thức tính góc tạo bởi 2 vectơ \(\vec{a}=(x_a,y_a,z_a)\) và \(\vec{b}=(x_b,y_b,z_b)\) trong mặt phẳng tọa độ \(Oxyz\).</p>
+                        <p>Công thức tính góc tạo bởi 2 vectơ \(\vec{a}=(x_a,y_a,z_a)\) và \(\vec{b}=(x_b,y_b,z_b)\) trong không gian tọa độ \(Oxyz\).</p>
                         <div class="answer-section">
                             <textarea name="q2" rows="4" placeholder="Nhập câu trả lời của bạn..."></textarea>
                             <div class="file-upload-section">
@@ -111,7 +129,7 @@
 
                     <div class="question">
                         <h3>Câu 5:</h3>
-                        <p>Cho 2 biến cố \(A\) và \(B\) có \(P(A) = 0.6\), \(P(B) = 0.4\) và \(P(A \cap B) = 0.2\). Tính \(P(A \cup B)\).</p>
+                        <p>Cho 2 biến cố \(A\) và \(B\) có \(P(A) = 0.5\), \(P(B) = 0.3\) và \(P(A \cap B) = 0.1\). Tính \(P(A \cup B)\).</p>
                         <div class="answer-section">
                             <textarea name="q5" rows="4" placeholder="Nhập câu trả lời của bạn..."></textarea>
                             <div class="file-upload-section">
@@ -126,7 +144,7 @@
 
                     <div class="question">
                         <h3>Câu 6:</h3>
-                        <p>Cho 2 biến cố \(A\) và \(B\) có \(P(A) = 0.6\), \(P(B) = 0.3\) và \(P(A|B) = 0.2\). Tính \(P(B|A)\).</p>
+                        <p>Cho 2 biến cố \(A\) và \(B\) có \(P(A) = 0.6\), \(P(B) = 0.3\) và \(P(A|B) = 0.2\). Tính \(P(B|A)\) sử dụng công thức Bayes: \[P(B|A) = \frac{P(A|B) \cdot P(B)}{P(A)}\]</p>
                         <div class="answer-section">
                             <textarea name="q6" rows="4" placeholder="Nhập câu trả lời của bạn..."></textarea>
                             <div class="file-upload-section">
