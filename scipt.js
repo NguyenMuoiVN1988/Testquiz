@@ -80,6 +80,11 @@ function showExamForm() {
     loginForm.style.display = 'none';
     examForm.style.display = 'block';
     studentName.textContent = currentStudent.name;
+    
+    // Trigger MathJax to render mathematical formulas
+    if (window.MathJax) {
+        window.MathJax.typesetPromise && window.MathJax.typesetPromise();
+    }
 }
 
 // Timer Function
