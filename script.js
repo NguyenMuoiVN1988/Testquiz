@@ -318,6 +318,12 @@ async function handleExamSubmit(e) {
     }
     
     try {
+        // Combine answers and uploaded files into answers JSONB
+        const answersWithFiles = {
+            ...answers,
+            files: uploadedFiles
+        };
+        
         // Save exam results to database
         const { data, error } = await supabase
             .from('exam_results')
@@ -325,8 +331,8 @@ async function handleExamSubmit(e) {
                 {
                     student_id: currentStudent.id,
                     student_name: currentStudent.name,
-                    answers: answers,
-                    uploaded_files: uploadedFiles,
+                    student_email: currentStudent.email,
+                    answers: answersWithFiles,
                     time_taken: EXAM_CONFIG.TIME_LIMIT - timeLeft,
                     submitted_at: new Date().toISOString()
                 }
@@ -366,6 +372,8 @@ function showResults(answersWithFiles) {
         resultHTML += '<hr>';
     });
     
+    resultHTML += '<p><strong>Thời gian làm bài:</strong> ' + Math.floor((EXAM_CONFIG.TIME_LIMIT - timeLeft) / 60) + ' phút ' + (EXAM_CONFIG.TIME_LIMIT - timeLeft) % 60 + ' giây</p>';
+    
     resultContent.innerHTML = resultHTML;
     resultModal.style.display = 'block';
 }
@@ -400,4 +408,4 @@ function handleLogout() {
 // Initialize when DOM is loaded
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Exam system initialized successfully');
-});
+}); 
